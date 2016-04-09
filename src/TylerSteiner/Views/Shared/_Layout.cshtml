@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>@ViewBag.Title | Tyler Steiner</title>
+    <link rel="stylesheet" href="/dist/css/site.css">
+</head>
+
+<body>
+    <section class="sidebar">
+        <div class="sidebar-picture">
+            <a asp-controller="Home" asp-action="Index"><img src="img/tyler.jpg" alt="Tyler Steiner" class="profile-picture" /></a>
+        </div>
+        <div class="sidebar-name">
+            <h1>Tyler Steiner</h1>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li><a asp-controller="Home" asp-action="About">About</a></li>
+                <li><a asp-controller="Home" asp-action="Movies">Movies</a></li>
+            </ul>
+        </div>
+        <div class="sidebar-connections large-only">
+            <a href="http://raikes.unl.edu"><img src="img/unl.png" alt="University of Nebraska - Lincoln" /></a>
+            <a href="https://www.linkedin.com/in/tyler-steiner-52b17285"><img src="img/linkedin.png" alt="LinkedIn" /></a>
+        </div>
+    </section>
+
+    <section class="content">
+        @RenderBody()
+</section>
+</body>
+
+</html>

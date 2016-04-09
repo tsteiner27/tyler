@@ -1,0 +1,27 @@
+﻿@model IEnumerable<TylerSteiner.Models.Movie>
+
+@{
+    ViewBag.Title = "Movies";
+}
+
+<div class="movies-header">
+    <div class="movies-search">
+        <input type="text" placeholder="Search..." />
+    </div>
+    <div class="movies-sort">
+        <span class="movies-sort-option">Sort by Rating <i class="icon ion-ios-list-outline"></i></span>
+    </div>
+</div>
+<div class="movies-container">
+    <ul class="movies">
+        @foreach (var movie in Model)
+        {
+            <li class="movie">
+                <img class="movie-poster" alt="@movie.Name" src="@movie.PosterUrl" />
+                <h4 class="movie-title">@movie.Name</h4>
+                <div class="movie-subtitle">@movie.Category</div>
+                <span class="movie-rating">@movie.Rating</span>
+            </li>
+        }
+    </ul>
+</div>
