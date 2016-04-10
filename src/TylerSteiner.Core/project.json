@@ -1,0 +1,12 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "TylerSteiner.Core Class Library",
+  "authors": [ "Ryan Erdmann" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "frameworks": {
+    "dnx451": { }
+  }
+}

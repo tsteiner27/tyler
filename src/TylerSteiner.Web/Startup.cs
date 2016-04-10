@@ -3,7 +3,9 @@ using Microsoft.AspNet.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using TylerSteiner.Core.Options;
 using TylerSteiner.Services;
+using TylerSteiner.Services.Data;
 
 namespace TylerSteiner
 {
@@ -17,6 +19,7 @@ namespace TylerSteiner
         {
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("config.json")
+                .AddJsonFile("secrets.json", true)
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
@@ -24,7 +27,10 @@ namespace TylerSteiner
         
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<DatabaseConfig>(Configuration.GetSection("Database"));
+
             services.AddMvc();
+            services.AddTransient<IDbConnectionFactory, SqlConnectionFactory>();
             services.AddTransient<IMovieService, MovieService>();
             services.AddInstance<IConfiguration>(Configuration);
         }
