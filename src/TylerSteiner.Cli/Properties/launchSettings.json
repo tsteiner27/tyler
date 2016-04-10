@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ts": {
+      "commandName": "ts",
+      "commandLineArgs": "import-excel"
+    }
+  }
+}

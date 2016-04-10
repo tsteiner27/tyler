@@ -32,7 +32,6 @@ namespace TylerSteiner
             services.AddMvc();
             services.AddTransient<IDbConnectionFactory, SqlConnectionFactory>();
             services.AddTransient<IMovieService, MovieService>();
-            services.AddInstance<IConfiguration>(Configuration);
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
