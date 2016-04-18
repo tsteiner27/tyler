@@ -1,4 +1,5 @@
-﻿@model IEnumerable<TylerSteiner.Models.Movie>
+﻿@using TylerSteiner.Core.Extensions
+@model IEnumerable<TylerSteiner.Models.Movie>
 
 @{
     ViewBag.Title = "Movies";
@@ -14,14 +15,25 @@
 </div>
 <div class="movies-container">
     <ul class="movies">
-        @foreach (var movie in Model)
+        @foreach (var movie in Model.OrderByDescending(m => m.Rating))
         {
             <li class="movie">
-                <img class="movie-poster" alt="@movie.Title" src="@movie.Poster" />
+                <img class="movie-poster" alt="@movie.Title" src="~/img/poster.jpg" data-src="@movie.Poster" />
                 <h4 class="movie-title">@movie.Title</h4>
-                <div class="movie-subtitle">@movie.MpaaRating</div>
-                <span class="movie-rating">@movie.Rating</span>
+                <span class="movie-rating">@movie.Rating.Truncate(1)</span>
             </li>
         }
     </ul>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/unveil/1.3.0/jquery.unveil.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('img').unveil(0, function() {
+            $(this).load(function () {
+                this.style.opacity = 1;
+            });
+        });
+    });
+</script>

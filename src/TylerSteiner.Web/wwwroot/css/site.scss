@@ -339,23 +339,29 @@ html, body {
     display: inline-block;
     margin-right: 1rem;
     margin-bottom: 1em;
+    vertical-align: top;
+
+    width: 9.5rem;
+    @include respond($breakpoint) {
+        width: 10.5rem;
+    }
 }
 
 .movie-poster {
     height: 13.3rem;
+    width: 9.5rem;
     border: .2rem solid white;
+    opacity: .4;
+    transition: opacity .3s ease-in;
     
     @include respond($breakpoint) {
         height: 16rem;
+        width: 10.5rem;
     }
 }
 
 .movie-title {
-    margin: 0;
-}
-
-.movie-subtitle {
-    font-size: .8rem;
+    margin: 0;    
 }
 
 .movie-rating {
