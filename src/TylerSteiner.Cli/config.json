@@ -8,6 +8,6 @@
     }
   },
   "Database": {
-    "ConnectionString": ""
+    "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=movies;Trusted_Connection=True;MultipleActiveResultSets=true"
   }
 }

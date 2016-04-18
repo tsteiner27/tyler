@@ -4,7 +4,7 @@ namespace TylerSteiner.Models.Providers
 {
     public class ImdbMovieData : IImdbEntity
     {
-        public string ImdbId { get; set; }
+        public string Id { get; set; }
 
         public IEnumerable<Actor> Actors { get; set; }
         public IEnumerable<Producer> Producers { get; set; }

@@ -66,7 +66,7 @@ namespace TylerSteiner.Services
             {
                 var insertMovie = _sqlFactory.CreateParameterizedInsertStatement<Movie>("Movies");
 
-                var result = await connection.QueryAsync<long>(insertMovie, movie);
+                var result = await connection.QueryAsync<string>(insertMovie, movie);
                 var movieId = result.Single();
 
                 _logger.LogInformation("{Movie} imported with Id '{Id}'", movie.Title, movieId);
@@ -85,12 +85,12 @@ namespace TylerSteiner.Services
             });
         }
         
-        private interface IRelatedTypeImporter<in T> where T : class, IImdbEntity, IEntity
+        private interface IRelatedTypeImporter<in T> where T : class, IImdbEntity
         {
-            Task Import(IDbConnection connection, IEnumerable<T> source, long movieId);
+            Task Import(IDbConnection connection, IEnumerable<T> source, string movieId);
         }
 
-        private class RelatedTypeImporter<T> : IRelatedTypeImporter<T> where T : class, IImdbEntity, IEntity
+        private class RelatedTypeImporter<T> : IRelatedTypeImporter<T> where T : class, IImdbEntity
         {
             private readonly ISqlQueryFactory _sqlFactory;
             private readonly ILogger _logger;
@@ -112,7 +112,7 @@ namespace TylerSteiner.Services
                 _mappingTableName = $"{type.Name}Mapping";
             } 
 
-            public async Task Import(IDbConnection connection, IEnumerable<T> source, long movieId)
+            public async Task Import(IDbConnection connection, IEnumerable<T> source, string movieId)
             {
                 if (_cache == null)
                 {
@@ -129,29 +129,29 @@ namespace TylerSteiner.Services
                 var list = source.ToList();
 
                 var missing = list
-                    .Where(item => _cache.FirstOrDefault(cached => item.ImdbId == cached.ImdbId) == null)
+                    .Where(item => _cache.FirstOrDefault(cached => item.Id == cached.Id) == null)
                     .ToList();
 
                 foreach (var item in missing)
                 {
                     var sql = _sqlFactory.CreateParameterizedInsertStatement<T>(_tableName);
-                    var result = await connection.QueryAsync<long>(sql, item);
-                    var id = result.Single();
-                    _logger.LogInformation("Inserted {ImdbId} in {Table}", item.ImdbId, _tableName);
+                    var result = await connection.QueryAsync<string>(sql, item);
+                    var insertedId = result.Single();
+                    _logger.LogInformation("Inserted {Id} in {Table}", item.Id, _tableName);
 
-                    item.Id = id;
+                    item.Id = insertedId;
                     _cache.Add(item);
                 }
 
                 foreach (var item in list)
                 {
                     // Get the cached version, because we have an Id
-                    var cached = _cache.First(g => g.ImdbId == item.ImdbId);
+                    var cached = _cache.First(g => g.Id == item.Id);
 
                     var sql = $"INSERT INTO {_mappingTableName} ([MovieId],[{_elementName}Id]) VALUES (@MovieId,@Id)";
-                    await connection.ExecuteAsync(sql, new { MovieId = movieId, Id = cached.Id });
+                    await connection.ExecuteAsync(sql, new { MovieId = movieId, ImdbId = cached.Id });
 
-                    _logger.LogInformation("Inserted {ImdbId} in {Table}", item.ImdbId, _mappingTableName);
+                    _logger.LogInformation("Inserted {Id} in {Table}", item.Id, _mappingTableName);
                 }
             }
         }

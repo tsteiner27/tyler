@@ -70,16 +70,16 @@ namespace TylerSteiner.Cli.Commands
                         _logger.LogWarning("No OMDB movie data found for '{Movie}'", line.Title);
                         continue;
                     }
-                    _logger.LogInformation("Matched '{Movie}' with data from IMDB ID '{ImdbId}' ({OmdbMovie})", line.Title, omdb.ImdbId, omdb.Title);
+                    _logger.LogInformation("Matched '{Movie}' with data from IMDB ID '{Id}' ({OmdbMovie})", line.Title, omdb.ImdbId, omdb.Title);
 
                     // Get movie data from IMDB
                     var imdb = await _imdbData.GetMovieDataAsync(omdb.ImdbId);
                     if (imdb == null)
                     {
-                        _logger.LogWarning("No IMDB movie data found for {Movie} '{ImdbId}'", line.Title, omdb.ImdbId);
+                        _logger.LogWarning("No IMDB movie data found for {Movie} '{Id}'", line.Title, omdb.ImdbId);
                         continue;
                     }
-                    _logger.LogInformation("Pulled data from IMDB for IMDB ID '{ImdbId}'", omdb.ImdbId);
+                    _logger.LogInformation("Pulled data from IMDB for IMDB ID '{Id}'", omdb.ImdbId);
 
                     // Merge data and import
                     await MergeAndImportMovie(line, omdb, imdb, rating);
@@ -98,7 +98,7 @@ namespace TylerSteiner.Cli.Commands
                 Title = omdb.Title,
                 Rating = rating,
                 Poster = omdb.Poster,
-                ImdbId = omdb.ImdbId,
+                Id = omdb.ImdbId,
                 Budget = line.Budget.GetValueOrDefault(),
                 ImdbRating = line.ImdbRating,
                 Length = line.RunningTime,
@@ -114,7 +114,7 @@ namespace TylerSteiner.Cli.Commands
             var genres = line.Genres.Where(g => !string.IsNullOrWhiteSpace(g)).Select(g => new Genre
             {
                 Name = g,
-                ImdbId = g.ToLower(),
+                Id = g.ToLower(),
             });
 
             await _importService.ImportMovie(

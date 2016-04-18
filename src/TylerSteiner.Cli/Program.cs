@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Threading;
+using Microsoft.Data.Entity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TylerSteiner.Cli.CommandLine;
 using TylerSteiner.Cli.Commands;
+using TylerSteiner.Cli.EntityFramework;
 using TylerSteiner.Core.Options;
 using TylerSteiner.Services;
 using TylerSteiner.Services.Data;
@@ -55,6 +57,10 @@ namespace TylerSteiner.Cli
             
             // Logging
             services.AddLogging();
+            services
+                .AddEntityFramework()
+                .AddSqlServer()
+                .AddDbContext<MoviesDbContext>(options => options.UseSqlServer(configuration["Database:ConnectionString"]));
             
             // Services
             services.AddTransient<IDbConnectionFactory, SqlConnectionFactory>();

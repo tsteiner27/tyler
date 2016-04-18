@@ -1,9 +1,8 @@
 ﻿namespace TylerSteiner.Models
 {
-    public class Studio : IEntity, IImdbEntity
+    public class Studio : IImdbEntity
     {
-        public long Id { get; set; }
-        public string ImdbId { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
     }
 }

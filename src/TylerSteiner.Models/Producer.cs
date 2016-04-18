@@ -1,9 +1,8 @@
 ﻿namespace TylerSteiner.Models
 {
-    public class Producer : IEntity, IImdbEntity
+    public class Producer : IImdbEntity
     {
-        public long Id { get; set; }
-        public string ImdbId { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
     }
 }

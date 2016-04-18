@@ -54,7 +54,7 @@ namespace TylerSteiner.Services.Providers
 
             if (!fullCredits.IsSuccessStatusCode || !companyCredits.IsSuccessStatusCode)
             {
-                _logger.LogInformation("Scraper failed to retrieve data for '{ImdbId}'", imdbId);
+                _logger.LogInformation("Scraper failed to retrieve data for '{Id}'", imdbId);
                 return null;
             }
             
@@ -66,41 +66,41 @@ namespace TylerSteiner.Services.Providers
                 fullCreditsDom,
                 "Directed by",
                 credit => true,
-                (id, name) => new Director {ImdbId = id, Name = name});
+                (id, name) => new Director {Id = id, Name = name});
             var writers = ParseFullCreditsTable(
                 fullCreditsDom,
                 "Writing Credits",
                 credit => true,
-                (id, name) => new Writer {ImdbId = id, Name = name});
+                (id, name) => new Writer {Id = id, Name = name});
             var producers = ParseFullCreditsTable(
                 fullCreditsDom,
                 "Produced by",
                 credit => credit == "producer",
-                (id, name) => new Producer { ImdbId = id, Name = name });
+                (id, name) => new Producer { Id = id, Name = name });
             var composers = ParseFullCreditsTable(
                 fullCreditsDom,
                 "Music by",
                 credit => true,
-                (id, name) => new Composer { ImdbId = id, Name = name });
+                (id, name) => new Composer { Id = id, Name = name });
             var cinematographers = ParseFullCreditsTable(
                 fullCreditsDom,
                 "Cinematography by",
                 credit => true,
-                (id, name) => new Cinematographer { ImdbId = id, Name = name });
+                (id, name) => new Cinematographer { Id = id, Name = name });
             var studios = ParseCompanyCreditsList(
                 companyCreditsDom,
                 "Production Companies",
                 line => true,
-                (id, name) => new Studio { ImdbId = id, Name = name });
+                (id, name) => new Studio { Id = id, Name = name });
             var distributors = ParseCompanyCreditsList(
                 companyCreditsDom,
                 "Distributors",
                 line => line.Contains("(USA) (theatrical)"),
-                (id, name) => new Distributor { ImdbId = id, Name = name });;
+                (id, name) => new Distributor { Id = id, Name = name });;
 
             var data = new ImdbMovieData
             {
-                ImdbId = imdbId,
+                Id = imdbId,
                 Directors = directors.Distinct(new ImdbEqualityComparer<Director>()).ToList(),
                 Writers = writers.Distinct(new ImdbEqualityComparer<Writer>()).ToList(),
                 Actors = actors.Distinct(new ImdbEqualityComparer<Actor>()).ToList(),
@@ -128,7 +128,7 @@ namespace TylerSteiner.Services.Providers
                 yield return new Actor
                 {
                     Name = name,
-                    ImdbId = actorId,
+                    Id = actorId,
                 };
             }
         }

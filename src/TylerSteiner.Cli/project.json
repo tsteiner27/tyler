@@ -11,6 +11,8 @@
   },
 
   "dependencies": {
+    "EntityFramework.Commands": "7.0.0-rc1-final",
+    "EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final",
     "Microsoft.Extensions.Configuration.Json": "1.0.0-rc1-final",
     "Microsoft.Extensions.DependencyInjection": "1.0.0-rc1-final",
     "Microsoft.Extensions.Logging": "1.0.0-rc1-final",
@@ -21,7 +23,8 @@
   },
 
   "commands": {
-    "ts": "TylerSteiner.Cli"
+    "ts": "TylerSteiner.Cli",
+    "ef": "EntityFramework.Commands"
   },
 
   "frameworks": {

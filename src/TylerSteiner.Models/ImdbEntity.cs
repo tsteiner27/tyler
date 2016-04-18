@@ -2,6 +2,6 @@
 {
     public interface IImdbEntity
     {
-        string ImdbId { get; }
+        string Id { get; set; }
     }
 }

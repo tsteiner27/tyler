@@ -8,12 +8,12 @@ namespace TylerSteiner.Models
         {
             if (x == null && y == null) return true;
             if (x == null | y == null)return false;
-            return x.ImdbId == y.ImdbId;
+            return x.Id == y.Id;
         }
 
         public int GetHashCode(T obj)
         {
-            return obj.ImdbId.GetHashCode();
+            return obj.Id.GetHashCode();
         }
     }
 }
