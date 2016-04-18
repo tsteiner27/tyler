@@ -1,4 +1,6 @@
-﻿namespace TylerSteiner.Models
+﻿using System.Collections.Generic;
+
+namespace TylerSteiner.Models
 {
     public class Movie : IImdbEntity
     {
@@ -16,5 +18,15 @@
         public long? Budget { get; set; }
         public long? UsBoxOffice { get; set; }
         public long? WorldBoxOffice { get; set; }
+
+        public ICollection<ActorMapping> ActorMappings { get; set; }
+        public ICollection<CinematographerMapping> CinematographerMappings { get; set; }
+        public ICollection<ComposerMapping> ComposerMappings { get; set; }
+        public ICollection<DirectorMapping> DirectorMappings { get; set; }
+        public ICollection<DistributorMapping> DistributorMappings { get; set; }
+        public ICollection<GenreMapping> GenreMappings { get; set; }
+        public ICollection<ProducerMapping> ProducerMappings { get; set; }
+        public ICollection<StudioMapping> StudioMappings { get; set; }
+        public ICollection<WriterMapping> WriterMappings { get; set; }
     }
 }

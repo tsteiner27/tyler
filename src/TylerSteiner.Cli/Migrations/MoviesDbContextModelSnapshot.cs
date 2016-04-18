@@ -165,6 +165,8 @@ namespace TylerSteiner.Cli.Migrations
                     b.Property<int>("Year");
 
                     b.HasKey("Id");
+
+                    b.HasAnnotation("Relational:TableName", "Movies");
                 });
 
             modelBuilder.Entity("TylerSteiner.Models.Producer", b =>

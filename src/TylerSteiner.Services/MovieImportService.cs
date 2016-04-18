@@ -61,7 +61,7 @@ namespace TylerSteiner.Services
             IEnumerable<Writer> writers)
         {
             _logger.LogInformation("Importing {Movie} into the database.", movie.Title);
-
+            
             await _connectionFactory.UseAsync(async connection =>
             {
                 var insertMovie = _sqlFactory.CreateParameterizedInsertStatement<Movie>("Movies");

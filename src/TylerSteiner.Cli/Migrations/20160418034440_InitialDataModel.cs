@@ -75,7 +75,7 @@ namespace TylerSteiner.Cli.Migrations
                     table.PrimaryKey("PK_Genre", x => x.Id);
                 });
             migrationBuilder.CreateTable(
-                name: "Movie",
+                name: "Movies",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
@@ -149,7 +149,7 @@ namespace TylerSteiner.Cli.Migrations
                     table.ForeignKey(
                         name: "FK_ActorMapping_Movie_MovieId",
                         column: x => x.MovieId,
-                        principalTable: "Movie",
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -172,7 +172,7 @@ namespace TylerSteiner.Cli.Migrations
                     table.ForeignKey(
                         name: "FK_CinematographerMapping_Movie_MovieId",
                         column: x => x.MovieId,
-                        principalTable: "Movie",
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -195,7 +195,7 @@ namespace TylerSteiner.Cli.Migrations
                     table.ForeignKey(
                         name: "FK_ComposerMapping_Movie_MovieId",
                         column: x => x.MovieId,
-                        principalTable: "Movie",
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -218,7 +218,7 @@ namespace TylerSteiner.Cli.Migrations
                     table.ForeignKey(
                         name: "FK_DirectorMapping_Movie_MovieId",
                         column: x => x.MovieId,
-                        principalTable: "Movie",
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -241,7 +241,7 @@ namespace TylerSteiner.Cli.Migrations
                     table.ForeignKey(
                         name: "FK_DistributorMapping_Movie_MovieId",
                         column: x => x.MovieId,
-                        principalTable: "Movie",
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -264,7 +264,7 @@ namespace TylerSteiner.Cli.Migrations
                     table.ForeignKey(
                         name: "FK_GenreMapping_Movie_MovieId",
                         column: x => x.MovieId,
-                        principalTable: "Movie",
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -281,7 +281,7 @@ namespace TylerSteiner.Cli.Migrations
                     table.ForeignKey(
                         name: "FK_ProducerMapping_Movie_MovieId",
                         column: x => x.MovieId,
-                        principalTable: "Movie",
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -304,7 +304,7 @@ namespace TylerSteiner.Cli.Migrations
                     table.ForeignKey(
                         name: "FK_StudioMapping_Movie_MovieId",
                         column: x => x.MovieId,
-                        principalTable: "Movie",
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -327,7 +327,7 @@ namespace TylerSteiner.Cli.Migrations
                     table.ForeignKey(
                         name: "FK_WriterMapping_Movie_MovieId",
                         column: x => x.MovieId,
-                        principalTable: "Movie",
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -358,7 +358,7 @@ namespace TylerSteiner.Cli.Migrations
             migrationBuilder.DropTable("Genres");
             migrationBuilder.DropTable("Producers");
             migrationBuilder.DropTable("Studios");
-            migrationBuilder.DropTable("Movie");
+            migrationBuilder.DropTable("Movies");
             migrationBuilder.DropTable("Writers");
         }
     }

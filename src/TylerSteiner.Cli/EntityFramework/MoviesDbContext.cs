@@ -37,7 +37,6 @@ namespace TylerSteiner.Cli.EntityFramework
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=movies;Trusted_Connection=True;MultipleActiveResultSets=true");
@@ -46,6 +45,7 @@ namespace TylerSteiner.Cli.EntityFramework
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Movie>().ToTable("Movies");
             builder.Entity<Actor>().ToTable("Actors");
             builder.Entity<Cinematographer>().ToTable("Cinematographers");
             builder.Entity<Composer>().ToTable("Composers");

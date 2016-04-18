@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -6,8 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TylerSteiner.Cli.CommandLine;
+using TylerSteiner.Cli.EntityFramework;
 using TylerSteiner.Models;
-using TylerSteiner.Models.Providers;
 using TylerSteiner.Services;
 using TylerSteiner.Services.Providers;
 
@@ -43,9 +44,21 @@ namespace TylerSteiner.Cli.Commands
 
         private async Task<int> ExecuteAsync(string path, CancellationToken token)
         {
+            // Create lists to store objects
+            var movies = new List<Movie>();
+            var actors = new List<Actor>();
+            var cinematographers = new List<Cinematographer>();
+            var composers = new List<Composer>();
+            var directors = new List<Director>();
+            var distributors = new List<Distributor>();
+            var genres = new List<Genre>();
+            var producers = new List<Producer>();
+            var studios = new List<Studio>();
+            var writers = new List<Writer>();
+
             // Read in the tsv and convert to typed object
             var lines = File.ReadAllLines(path).Skip(1).Select(Parse);
-
+            
             // Rankings in the file are truncated to one digit, with ties broken by Rank
             // We group by Rating, Order by Rank, and assign computed ratings so the 
             // new rankings are distributed uniformly.
@@ -81,53 +94,116 @@ namespace TylerSteiner.Cli.Commands
                     }
                     _logger.LogInformation("Pulled data from IMDB for IMDB ID '{Id}'", omdb.ImdbId);
 
-                    // Merge data and import
-                    await MergeAndImportMovie(line, omdb, imdb, rating);
+                    // Add data we've parsed
+                    var excelGenres = line.Genres.Where(g => !string.IsNullOrWhiteSpace(g)).Select(g => new Genre
+                    {
+                        Name = g,
+                        Id = g.ToLower(),
+                    }).Distinct(new ImdbEqualityComparer<Genre>()).ToList();
 
+                    actors.AddRange(imdb.Actors);
+                    cinematographers.AddRange(imdb.Cinematographers);
+                    distributors.AddRange(imdb.Distributors);
+                    directors.AddRange(imdb.Directors);
+                    producers.AddRange(imdb.Producers);
+                    composers.AddRange(imdb.Composers);
+                    writers.AddRange(imdb.Writers);
+                    studios.AddRange(imdb.Studios);
+                    genres.AddRange(excelGenres);
+
+                    var movie = new Movie
+                    {
+                        Title = omdb.Title,
+                        Rating = rating,
+                        Poster = omdb.Poster,
+                        Id = omdb.ImdbId,
+                        Budget = line.Budget.GetValueOrDefault(),
+                        ImdbRating = line.ImdbRating,
+                        Length = line.RunningTime,
+                        MpaaRating = line.MpaaRating,
+                        SawPremier = line.Premiere,
+                        TimesWatched = line.TimesWatched,
+                        TimesWatchedInTheater = line.TimesWatchedTheater,
+                        UsBoxOffice = line.UsBoxOffice.GetValueOrDefault(),
+                        WorldBoxOffice = line.WorldwideBoxOffice.GetValueOrDefault(),
+                        Year = line.Year,
+
+                        // Related properties
+                        ActorMappings = imdb.Actors.Select(a => new ActorMapping { MovieId = omdb.ImdbId, ActorId = a.Id }).ToList(),
+                        CinematographerMappings = imdb.Cinematographers.Select(c => new CinematographerMapping { MovieId = omdb.ImdbId, CinematographerId = c.Id }).ToList(),
+                        DistributorMappings = imdb.Distributors.Select(d => new DistributorMapping { MovieId = omdb.ImdbId, DistributorId = d.Id }).ToList(),
+                        DirectorMappings = imdb.Directors.Select(d => new DirectorMapping { MovieId = omdb.ImdbId, DirectorId = d.Id }).ToList(),
+                        ProducerMappings = imdb.Producers.Select(p => new ProducerMapping { MovieId = omdb.ImdbId, ProducerId = p.Id }).ToList(),
+                        ComposerMappings = imdb.Composers.Select(c => new ComposerMapping { MovieId = omdb.ImdbId, ComposerId = c.Id }).ToList(),
+                        WriterMappings = imdb.Writers.Select(w => new WriterMapping { MovieId = omdb.ImdbId, WriterId = w.Id }).ToList(),
+                        StudioMappings = imdb.Studios.Select(s => new StudioMapping { MovieId = omdb.ImdbId, StudioId = s.Id }).ToList(),
+                        GenreMappings = excelGenres.Select(g => new GenreMapping { MovieId = omdb.ImdbId, GenreId = g.Id }).ToList(),
+                    };
+                    movies.Add(movie);
+
+                    // Increment counter and continue
                     numerator ++;
                 }
             }
 
+            // Remove duplicates
+            actors = actors.Distinct(new ImdbEqualityComparer<Actor>()).ToList();
+            cinematographers = cinematographers.Distinct(new ImdbEqualityComparer<Cinematographer>()).ToList();
+            composers = composers.Distinct(new ImdbEqualityComparer<Composer>()).ToList();
+            directors = directors.Distinct(new ImdbEqualityComparer<Director>()).ToList();
+            distributors = distributors.Distinct(new ImdbEqualityComparer<Distributor>()).ToList();
+            genres = genres.Distinct(new ImdbEqualityComparer<Genre>()).ToList();
+            producers = producers.Distinct(new ImdbEqualityComparer<Producer>()).ToList();
+            studios = studios.Distinct(new ImdbEqualityComparer<Studio>()).ToList();
+            writers = writers.Distinct(new ImdbEqualityComparer<Writer>()).ToList();
+
+            // Insert entities into DB
+            using (var context = new MoviesDbContext())
+            {
+                _logger.LogInformation("Starting context session");
+
+                context.Actors.AddRange(actors);
+                _logger.LogInformation("Attached Actors to context");
+
+                context.Cinematographers.AddRange(cinematographers);
+                _logger.LogInformation("Attached Cinematographers to context");
+
+                context.Composers.AddRange(composers);
+                _logger.LogInformation("Attached Composers to context");
+
+                context.Directors.AddRange(directors);
+                _logger.LogInformation("Attached Directors to context");
+
+                context.Distributors.AddRange(distributors);
+                _logger.LogInformation("Attached Distributors to context");
+
+                context.Genres.AddRange(genres);
+                _logger.LogInformation("Attached Genres to context");
+
+                context.Producers.AddRange(producers);
+                _logger.LogInformation("Attached Producers to context");
+
+                context.Studios.AddRange(studios);
+                _logger.LogInformation("Attached Studios to context");
+
+                context.Writers.AddRange(writers);
+                _logger.LogInformation("Attached Writers to context");
+
+                await context.SaveChangesAsync(token);
+                _logger.LogInformation("Saved changes");
+            }
+
+            foreach (var movie in movies)
+            {
+                using (var context = new MoviesDbContext())
+                {
+                    _logger.LogInformation("Attaching movie {Name}", movie.Title);
+                    context.Movies.Add(movie);
+                    await context.SaveChangesAsync(token);
+                }
+            }
+
             return 1;
-        }
-
-        private async Task MergeAndImportMovie(ExcelFileLine line, OmdbMovieData omdb, ImdbMovieData imdb, double rating)
-        {
-            var movie = new Movie
-            {
-                Title = omdb.Title,
-                Rating = rating,
-                Poster = omdb.Poster,
-                Id = omdb.ImdbId,
-                Budget = line.Budget.GetValueOrDefault(),
-                ImdbRating = line.ImdbRating,
-                Length = line.RunningTime,
-                MpaaRating = line.MpaaRating,
-                SawPremier = line.Premiere,
-                TimesWatched = line.TimesWatched,
-                TimesWatchedInTheater = line.TimesWatchedTheater,
-                UsBoxOffice = line.UsBoxOffice.GetValueOrDefault(),
-                WorldBoxOffice = line.WorldwideBoxOffice.GetValueOrDefault(),
-                Year = line.Year,
-            };
-
-            var genres = line.Genres.Where(g => !string.IsNullOrWhiteSpace(g)).Select(g => new Genre
-            {
-                Name = g,
-                Id = g.ToLower(),
-            });
-
-            await _importService.ImportMovie(
-                movie, 
-                genres, 
-                imdb.Actors, 
-                imdb.Cinematographers, 
-                imdb.Composers, 
-                imdb.Directors, 
-                imdb.Distributors, 
-                imdb.Producers, 
-                imdb.Studios, 
-                imdb.Writers);
         }
 
         private static ExcelFileLine Parse(string line)

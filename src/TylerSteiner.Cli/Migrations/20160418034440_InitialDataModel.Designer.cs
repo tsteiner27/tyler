@@ -8,7 +8,7 @@ using TylerSteiner.Cli.EntityFramework;
 namespace TylerSteiner.Cli.Migrations
 {
     [DbContext(typeof(MoviesDbContext))]
-    [Migration("20160418031953_InitialDataModel")]
+    [Migration("20160418034440_InitialDataModel")]
     partial class InitialDataModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -166,6 +166,8 @@ namespace TylerSteiner.Cli.Migrations
                     b.Property<int>("Year");
 
                     b.HasKey("Id");
+
+                    b.HasAnnotation("Relational:TableName", "Movies");
                 });
 
             modelBuilder.Entity("TylerSteiner.Models.Producer", b =>

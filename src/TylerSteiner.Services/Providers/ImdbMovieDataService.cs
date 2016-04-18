@@ -96,7 +96,7 @@ namespace TylerSteiner.Services.Providers
                 companyCreditsDom,
                 "Distributors",
                 line => line.Contains("(USA) (theatrical)"),
-                (id, name) => new Distributor { Id = id, Name = name });;
+                (id, name) => new Distributor { Id = id, Name = name });
 
             var data = new ImdbMovieData
             {
