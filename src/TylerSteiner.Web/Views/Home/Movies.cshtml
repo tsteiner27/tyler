@@ -17,9 +17,9 @@
         @foreach (var movie in Model)
         {
             <li class="movie">
-                <img class="movie-poster" alt="@movie.Name" src="@movie.PosterUrl" />
-                <h4 class="movie-title">@movie.Name</h4>
-                <div class="movie-subtitle">@movie.Category</div>
+                <img class="movie-poster" alt="@movie.Title" src="@movie.Poster" />
+                <h4 class="movie-title">@movie.Title</h4>
+                <div class="movie-subtitle">@movie.MpaaRating</div>
                 <span class="movie-rating">@movie.Rating</span>
             </li>
         }

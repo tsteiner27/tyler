@@ -2,7 +2,7 @@
   "profiles": {
     "ts": {
       "commandName": "ts",
-      "commandLineArgs": "import-excel"
+      "commandLineArgs": "import-excel \"C:\\Users\\ryane\\Desktop\\tyler.tsv\""
     }
   }
 }
